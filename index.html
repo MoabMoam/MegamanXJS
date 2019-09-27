@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta http-equiv="content-type" content="text/html; chatset=UTF-8"/>
+    <title>Testegame1</title>
+</head>
+<body>
+<canvas width="300" height="300"></canvas>
+<script>
+(function(){
+    var cnv = document.querySelector('canvas');
+    var ctx = cnv.getContext('2d');
+
+    //recursos
+    var background = new Image();
+    background.src = "scene.png";
+
+    var player = new Image();
+    player.src = "jogador.png";
+
+    //objetos
+    var sprites = [];
+    var gameWorld = {
+        img: background,
+        x: 0,
+        y: 0,
+        width: 800,
+        height: 600
+    };
+    sprites.push(gameWorld);
+
+    var char = {
+        img: player,
+        x: 0,
+        y: 0,
+        width: 45,
+        height: 52
+    };
+    sprites.push(char);
+    //centralizando a o personagem
+    char.x = (gameWorld.width - char.width)/2;
+    char.y = (gameWorld.height - char.height)/2;
+
+    var cam = {
+        x: 0,
+        y: 0,
+        width: cnv.width,
+        height: cnv.height,
+        leftEdge: function(){
+            return this.x + (this.width*0.25);
+        },
+        rightEdge: function(){
+            return this.x + (this.width*0.75);
+        },
+        topEdge: function(){
+            return this.y + (this.height*0.25);
+        },
+        bottomEdge: function(){
+            return this.x + (this.height*0.75);
+        },
+    };
+
+    //centralizando a câmera
+    cam.x = (gameWorld.width - cam.width)/2;
+    cam.y = (gameWorld.height - cam.height)/2;
+
+    //movendo o jogador
+    var mvLeft = mvRight = mvUp = mvDown = false;
+    window.addEventListener('keydown', function(e){
+        var key = e.keycode;
+        switch(key){
+            case 37:
+                mvLeft = true;
+                break;
+            case 39:
+                mvRight = true;
+                break;
+            case 38:
+                mvUp = true;
+                break;
+            case 40:
+                mvDown = true;
+                break;
+        }
+    },false);
+
+    window.addEventListener('keyup', function(e){
+        var key = e.keycode;
+        switch(key){
+            case 37:
+                mvLeft = false;
+                break;
+            case 39:
+                mvRight = false;
+                break;
+            case 38:
+                mvUp = false;
+                break;
+            case 40:
+                mvDown = false;
+                break;
+        }
+    },false);
+
+    function loop(){
+        window.requestAnimationFrame(loop,cnv);
+        update();
+        render();
+    }
+    function update(){
+        if(mvLeft && !mvRight){
+            char.x -= 2;
+        }
+        if(mvRight && !mvLeft){
+            char.x += 2;
+        }
+        if(mvUp && !mvDown){
+            char.y -= 2;
+        }
+        if(mvDown && !mvUp){
+            char.y += 2;
+        }
+
+    }
+    function render(){
+        ctx.save();
+        ctx.translate(-cam.x,-cam.y);
+        for(var i in sprites){
+            var spr = sprites[i];
+            ctx.drawImage(spr.img,0,0,spr.width,spr.height,spr.x,spr.y,spr.width,spr.height);
+        }
+        ctx.restore();
+    }
+
+    loop();
+}())
+</script>    
+</body>
+</html>
