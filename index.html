@@ -67,7 +67,7 @@
     //movendo o jogador
     var mvLeft = mvRight = mvUp = mvDown = false;
     window.addEventListener('keydown', function(e){
-        var key = e.keycode;
+        var key = e.keyCode;
         switch(key){
             case 37:
                 mvLeft = true;
@@ -85,7 +85,7 @@
     },false);
 
     window.addEventListener('keyup', function(e){
-        var key = e.keycode;
+        var key = e.keyCode;
         switch(key){
             case 37:
                 mvLeft = false;
