@@ -103,9 +103,9 @@
     },false);
 
     function loop(){
-        window.requestAnimationFrame(loop,cnv);
         update();
         render();
+        window.requestAnimationFrame(loop,cnv);
     }
     function update(){
         if(mvLeft && !mvRight){
