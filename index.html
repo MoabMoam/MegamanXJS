@@ -105,7 +105,7 @@
     function loop(){
         update();
         render();
-        window.requestAnimationFrame(loop,cnv);
+        
     }
     function update(){
         if(mvLeft && !mvRight){
@@ -132,7 +132,7 @@
         ctx.restore();
     }
 
-    loop();
+    window.requestAnimationFrame(loop,cnv);
 }())
 </script>    
 </body>
