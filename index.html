@@ -7,7 +7,7 @@
 <body>
 <canvas width="300" height="300"></canvas>
 <script>
-(function(){
+(function(window){
     var cnv = document.querySelector('canvas');
     var ctx = cnv.getContext('2d');
 
@@ -133,7 +133,7 @@
     }
 
     window.requestAnimationFrame(loop);
-}())
+}(window))
 </script>    
 </body>
 </html>
