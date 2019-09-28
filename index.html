@@ -7,17 +7,14 @@
 <body>
 <canvas width="300" height="300"></canvas>
 <script>
-(function(){
+(function(window){
     var cnv = document.querySelector('canvas');
     var ctx = cnv.getContext('2d');
-
     //recursos
     var background = new Image();
     background.src = "scene.png";
-
     var player = new Image();
     player.src = "jogador.png";
-
     //objetos
     var sprites = [];
     var gameWorld = {
@@ -28,7 +25,6 @@
         height: 600
     };
     sprites.push(gameWorld);
-
     var char = {
         img: player,
         x: 0,
@@ -40,7 +36,6 @@
     //centralizando a o personagem
     char.x = (gameWorld.width - char.width)/2;
     char.y = (gameWorld.height - char.height)/2;
-
     var cam = {
         x: 0,
         y: 0,
@@ -59,15 +54,13 @@
             return this.x + (this.height*0.75);
         },
     };
-
     //centralizando a câmera
     cam.x = (gameWorld.width - cam.width)/2;
     cam.y = (gameWorld.height - cam.height)/2;
-
     //movendo o jogador
     var mvLeft = mvRight = mvUp = mvDown = false;
     window.addEventListener('keydown', function(e){
-        var key = e.keycode;
+        var key = e.keyCode;
         switch(key){
             case 37:
                 mvLeft = true;
@@ -83,9 +76,8 @@
                 break;
         }
     },false);
-
     window.addEventListener('keyup', function(e){
-        var key = e.keycode;
+        var key = e.keyCode;
         switch(key){
             case 37:
                 mvLeft = false;
@@ -101,11 +93,10 @@
                 break;
         }
     },false);
-
     function loop(){
-        window.requestAnimationFrame(loop,cnv);
         update();
         render();
+        window.requestAnimationFrame(loop);
     }
     function update(){
         if(mvLeft && !mvRight){
@@ -120,7 +111,6 @@
         if(mvDown && !mvUp){
             char.y += 2;
         }
-
     }
     function render(){
         ctx.save();
@@ -131,9 +121,8 @@
         }
         ctx.restore();
     }
-
-    loop();
-}())
+    window.requestAnimationFrame(loop);
+}(window))
 </script>    
 </body>
 </html>
