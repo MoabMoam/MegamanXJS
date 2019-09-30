@@ -5,16 +5,16 @@
     <title>Testegame1</title>
 </head>
 <body>
-<canvas width="300" height="300"></canvas>
+<canvas width="800" height="600"></canvas>
 <script>
 (function(window){
     var cnv = document.querySelector('canvas');
     var ctx = cnv.getContext('2d');
     //recursos
     var background = new Image();
-    background.src = "scene.png";
+    background.src = "stage.png";
     var player = new Image();
-    player.src = "jogador.png";
+    player.src = "player.png";
     //objetos
     var sprites = [];
     var gameWorld = {
@@ -29,8 +29,8 @@
         img: player,
         x: 0,
         y: 0,
-        width: 45,
-        height: 52
+        width: 85,
+        height: 98
     };
     sprites.push(char);
     //centralizando a o personagem
@@ -100,10 +100,10 @@
     }
     function update(){
         if(mvLeft && !mvRight){
-            char.x -= 2;
+            char.x -= 4;
         }
         if(mvRight && !mvLeft){
-            char.x += 2;
+            char.x += 4;
         }
         if(mvUp && !mvDown){
             char.y -= 2;
@@ -111,6 +111,21 @@
         if(mvDown && !mvUp){
             char.y += 2;
         }
+
+        //Limite do char
+        if(char.x < 0){
+            char.x = 0;
+        }
+        if(char.x + char.widght > gameWorld.width){
+            char.x = gameWorld.width - char.width;
+        }
+        if(char.y < 0){
+            char.y = 0;
+        }
+        if(char.y + char.height > gameWorld.height){
+            char.y = gameWorld.height - char.height;
+        }
+        
     }
     function render(){
         ctx.save();
