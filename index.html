@@ -68,7 +68,7 @@
             case 39:
                 mvRight = true;
                 break;
-            case 38:
+            case 88:
                 mvUp = true;
                 break;
             case 40:
@@ -85,7 +85,7 @@
             case 39:
                 mvRight = false;
                 break;
-            case 38:
+            case 88:
                 mvUp = false;
                 break;
             case 40:
@@ -100,31 +100,46 @@
     }
     function update(){
         if(mvLeft && !mvRight){
-            char.x -= 4;
+            char.x -= 3;
         }
         if(mvRight && !mvLeft){
-            char.x += 4;
+            char.x += 3;
         }
         if(mvUp && !mvDown){
-            char.y -= 4;
+            char.y -= 3;
         }
         if(mvDown && !mvUp){
-            char.y += 4;
+            char.y += 3;
         }
 
-        //Limite do char
-        if(char.x < 0){
-            char.x = 0;
+        //Limite da Câmera
+        if(cam.x < 0){
+            cam.x = 0;
         }
-        if(char.x + char.widght > gameWorld.width){
-            char.x = gameWorld.width - char.width;
+        if(cam.x + cam.widght > gameWorld.width){
+            cam.x = gameWorld.width - cam.width;
         }
-        if(char.y < 0){
-            char.y = 0;
+        if(cam.y < 0){
+            cam.y = 0;
         }
-        if(char.y + char.height > gameWorld.height){
-            char.y = gameWorld.height - char.height;
+        if(cam.y + cam.height > gameWorld.height){
+            cam.y = gameWorld.height - cam.height;
         }
+        
+
+		//limite do char
+		if(char.x < 0){
+			char.x = 0;
+		}
+		if(char.x + char.width > gameWorld.width){
+			char.x = gameWorld.width - char.width;
+		}
+		if(char.y < 0){
+			char.y = 0;
+		}
+		if(char.y + char.height > gameWorld.height){
+			char.y = gameWorld.height - char.height;
+		}
         
     }
     function render(){
