@@ -3,6 +3,19 @@
   <head>
     <meta http-equiv="content-type" content="text/html; chatset=UTF-8" />
     <title>Megaman X JS</title>
+    <style>
+        body {
+            background: rgb(47, 149, 197);
+        }
+        canvas {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            margin: auto;
+        }
+    </style>
   </head>
   <body>
     <canvas width="800" height="600"></canvas>
@@ -13,9 +26,9 @@
     <script>
       var refX = document.getElementById("posX");
       var refY = document.getElementById("posY");
+      var maxPulos = 1;
       (function(window) {
         // Referências no HTML
-
         var cnv = document.querySelector("canvas");
         var ctx = cnv.getContext("2d");
         //recursos
@@ -38,13 +51,35 @@
           x: 0,
           y: 0,
           width: 85,
-          height: 98
-        };
+          height: 98,
+          gravidade: 0.9,
+          velocidade: 0,
+          forcaDoPulo: 17,
+          qntPulos: 0,
 
+          //gravidade
+          atualiza: function() {
+            this.velocidade += this.gravidade;
+            this.y += this.velocidade;
+
+            if (this.y > 440) {
+              this.y = 440
+              this.qntPulos = 0
+            }  
+          },
+
+          //pula
+          pula: function() {
+            if (this.qntPulos < maxPulos) {
+              this.velocidade = -this.forcaDoPulo
+              this. qntPulos += 1
+            }
+          },
+
+
+        };
         sprites.push(char);
         //centralizando a o personagem
-        char.x = (gameWorld.width - char.width) / 2;
-        char.y = (gameWorld.height - char.height) / 2;
         var cam = {
           x: 0,
           y: 0,
@@ -66,15 +101,12 @@
         //centralizando a câmera
         cam.x = (gameWorld.width - cam.width) / 2;
         cam.y = (gameWorld.height - cam.height) / 2;
-
         // Log de posição inicial
         refX.textContent = char.x;
         refY.textContent = char.y;
-
         //movendo o jogador
         var mvLeft = (mvRight = mvUp = mvDown = false);
-
-        window.addEventListener(
+        window.document.addEventListener(
           "keydown",
           function(e) {
             var key = e.keyCode;
@@ -95,7 +127,7 @@
           },
           false
         );
-        window.addEventListener(
+        window.document.addEventListener(
           "keyup",
           function(e) {
             var key = e.keyCode;
@@ -114,31 +146,36 @@
                 break;
             }
           },
-          false
+          false,
         );
+        // pulo
+        window.document.addEventListener("keyup", pula)
+        function pula(event) {
+          char.pula()
+        };
         function loop() {
           update();
           render();
           window.requestAnimationFrame(loop);
+
         }
         function update() {
           if (mvLeft && !mvRight) {
             refX.textContent = char.x;
-            char.x -= 3;
+            char.x -= 4;
           }
           if (mvRight && !mvLeft) {
             refX.textContent = char.x;
-            char.x += 3;
+            char.x += 4;
           }
           if (mvUp && !mvDown) {
             refY.textContent = char.y;
-            char.y -= 3;
+            char.y -= 4;
           }
           if (mvDown && !mvUp) {
             refY.textContent = char.y;
-            char.y += 3;
+            char.y += 4;
           }
-
           //Limite da Câmera
           if (cam.x < 0) {
             cam.x = 0;
@@ -152,7 +189,6 @@
           if (cam.y + cam.height > gameWorld.height) {
             cam.y = gameWorld.height - cam.height;
           }
-
           //limite do char
           if (char.x < 0) {
             char.x = 0;
@@ -166,6 +202,10 @@
           if (char.y + char.height > gameWorld.height) {
             char.y = gameWorld.height - char.height;
           }
+          // gravidade 
+          char.atualiza()
+          // pulo
+        
         }
         function render() {
           ctx.save();
