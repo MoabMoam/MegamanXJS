@@ -3,6 +3,19 @@
   <head>
     <meta http-equiv="content-type" content="text/html; chatset=UTF-8" />
     <title>Megaman X JS</title>
+    <style>
+        body {
+            background: rgb(47, 149, 197);
+        }
+        canvas {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            margin: auto;
+        }
+    </style>
   </head>
   <body>
     <canvas width="800" height="600"></canvas>
@@ -15,7 +28,6 @@
       var refY = document.getElementById("posY");
       (function(window) {
         // Referências no HTML
-
         var cnv = document.querySelector("canvas");
         var ctx = cnv.getContext("2d");
         //recursos
@@ -23,6 +35,13 @@
         background.src = "stage.png";
         var player = new Image();
         player.src = "player.png";
+        //estados
+        var _estadoAtual;
+        var _estado = {
+          jogar: 0,
+          jogando: 1,
+          perdeu: 2,
+        };
         //objetos
         var sprites = [];
         var gameWorld = {
@@ -33,18 +52,49 @@
           height: 600
         };
         sprites.push(gameWorld);
+        var maxPulos = 2;
         var char = {
           img: player,
           x: 0,
           y: 0,
           width: 85,
-          height: 98
-        };
+          height: 98,
+          gravidade: 0.9,
+          velocidade: 0,
+          forcaDoPulo: 17,
+          qntPulos: 0,
 
+          //gravidade
+          atualiza: function() {
+            this.velocidade += this.gravidade;
+            this.y += this.velocidade;
+
+            if (this.y > 440) {
+              this.y = 440
+              this.qntPulos = 0
+            }
+          },
+
+          atualiza1: function() {
+            this.velocidade += this.gravidade - 0.9;
+            this.y += this.velocidade;
+
+            if (this.y > 440) {
+              this.y = 440
+              this.qntPulos = 0
+            }
+          },
+
+          //pula
+          pula: function() {
+            if (this.qntPulos < maxPulos) {
+              this.velocidade = -this.forcaDoPulo
+              this. qntPulos += 1
+            }
+          },
+        };
         sprites.push(char);
         //centralizando a o personagem
-        char.x = (gameWorld.width - char.width) / 2;
-        char.y = (gameWorld.height - char.height) / 2;
         var cam = {
           x: 0,
           y: 0,
@@ -66,15 +116,12 @@
         //centralizando a câmera
         cam.x = (gameWorld.width - cam.width) / 2;
         cam.y = (gameWorld.height - cam.height) / 2;
-
         // Log de posição inicial
         refX.textContent = char.x;
         refY.textContent = char.y;
-
         //movendo o jogador
         var mvLeft = (mvRight = mvUp = mvDown = false);
-
-        window.addEventListener(
+        window.document.addEventListener(
           "keydown",
           function(e) {
             var key = e.keyCode;
@@ -95,7 +142,7 @@
           },
           false
         );
-        window.addEventListener(
+        window.document.addEventListener(
           "keyup",
           function(e) {
             var key = e.keyCode;
@@ -114,31 +161,31 @@
                 break;
             }
           },
-          false
+          false,
         );
         function loop() {
           update();
           render();
           window.requestAnimationFrame(loop);
+
         }
         function update() {
           if (mvLeft && !mvRight) {
             refX.textContent = char.x;
-            char.x -= 3;
+            char.x -= 4;
           }
           if (mvRight && !mvLeft) {
             refX.textContent = char.x;
-            char.x += 3;
+            char.x += 4;
           }
           if (mvUp && !mvDown) {
             refY.textContent = char.y;
-            char.y -= 3;
+            char.pula()
           }
           if (mvDown && !mvUp) {
             refY.textContent = char.y;
-            char.y += 3;
+            char.atualiza1()
           }
-
           //Limite da Câmera
           if (cam.x < 0) {
             cam.x = 0;
@@ -152,13 +199,12 @@
           if (cam.y + cam.height > gameWorld.height) {
             cam.y = gameWorld.height - cam.height;
           }
-
           //limite do char
-          if (char.x < 0) {
-            char.x = 0;
+          if (char.x < 40) {
+            char.x = 40;
           }
-          if (char.x + char.width > gameWorld.width) {
-            char.x = gameWorld.width - char.width;
+          if (char.x > 655) {
+            char.x = 655;
           }
           if (char.y < 0) {
             char.y = 0;
@@ -166,6 +212,8 @@
           if (char.y + char.height > gameWorld.height) {
             char.y = gameWorld.height - char.height;
           }
+          // gravidade 
+          char.atualiza()
         }
         function render() {
           ctx.save();
