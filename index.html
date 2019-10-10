@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
   <head>
     <meta http-equiv="content-type" content="text/html; chatset=UTF-8" />
     <title>Megaman X JS</title>
@@ -35,6 +35,10 @@
         background.src = "stage.png";
         var player = new Image();
         player.src = "player.png";
+        var logo = new Image();
+        logo.src = "_play.png";
+        var lose = new Image()
+        lose.src = "perdeu.png"
         //estados
         var _estadoAtual;
         var _estado = {
@@ -44,6 +48,20 @@
         };
         //objetos
         var sprites = [];
+        var play = {
+          img: logo,
+          x: 0,
+          y: 0,
+          widght: 310,
+          height: 220,
+        };
+        var perdeu = {
+          img: lose,
+          x: 0,
+          y: 0,
+          widght: 660,
+          height: 500,
+        };
         var gameWorld = {
           img: background,
           x: 0,
@@ -52,7 +70,7 @@
           height: 600
         };
         sprites.push(gameWorld);
-        var maxPulos = 2;
+        var maxPulos = 1;
         var char = {
           img: player,
           x: 0,
@@ -93,7 +111,7 @@
             }
           },
         };
-        sprites.push(char);
+        
         //centralizando a o personagem
         var cam = {
           x: 0,
@@ -163,11 +181,23 @@
           },
           false,
         );
+        _estadoAtual = _estado.jogar;
+        function clique(event) {
+          if (_estadoAtual == _estado.jogar) {
+            _estadoAtual = _estado.jogando
+          };
+        };
         function loop() {
           update();
           render();
           window.requestAnimationFrame(loop);
-
+          if (_estadoAtual == _estado.jogar){
+              ctx.drawImage(play.img, 270, 150, 310, 150)
+          } else if (_estadoAtual == _estado.jogando) {
+            sprites.push(char);
+          } else if (_estadoAtual == _estado.perdeu) {
+            ctx.drawImage(perdeu.img, 270, 150, 310, 150)
+          }
         }
         function update() {
           if (mvLeft && !mvRight) {
@@ -184,7 +214,7 @@
           }
           if (mvDown && !mvUp) {
             refY.textContent = char.y;
-            char.atualiza1()
+            
           }
           //Limite da Câmera
           if (cam.x < 0) {
@@ -206,14 +236,16 @@
           if (char.x > 655) {
             char.x = 655;
           }
-          if (char.y < 0) {
-            char.y = 0;
+          if (char.y < 60) {
+            char.y = 60;
           }
           if (char.y + char.height > gameWorld.height) {
             char.y = gameWorld.height - char.height;
           }
           // gravidade 
           char.atualiza()
+          // clique
+          document.addEventListener("mousedown", clique)
         }
         function render() {
           ctx.save();
@@ -229,7 +261,7 @@
               spr.x,
               spr.y,
               spr.width,
-              spr.height
+              spr.height,
             );
           }
           ctx.restore();
