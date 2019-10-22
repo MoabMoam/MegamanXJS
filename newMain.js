@@ -1,19 +1,22 @@
 // Variaveis principais
 var canvas;
 var ctx;
-var velocidade = 4;
 var width = 800
 var height = 600
-var tile1 = new Image();
 var megamanX;
 var num_posicoes;
 var frames;
 var temporizador = 0
-var maxPulos = 3;
-var refX = document.getElementById("posX");
-var refY = document.getElementById("posY");
+var maxPulos = 1;
 var contEspinho = 1;
 var contEspinho2 = 1;
+var playerScore = 0;
+var paredeLimite1 = 50;
+var paredeLimite2 = 730;
+var paredeLimite3 = 50
+var paredeLimite4 = 730
+var contScore = 0;
+
 
 // Recursos
 var background = new Image();
@@ -22,32 +25,45 @@ var player = new Image();
 player.src = "player.png";
 var logo = new Image();
 logo.src = "_play.png";
-var lose = new Image()
-lose.src = "perdeu.png"
-var thorn = new Image()
+var lose = new Image();
+lose.src = "perdeu.png";
+var thorn = new Image();
 thorn.src = "_espinho.png";
-var life10 = new Image()
-life10.src = "./vida/VIDA_10.png"
-var life9 = new Image()
-life9.src = "./vida/VIDA_9.png"
-var life8 = new Image()
-life8.src = "./vida/VIDA_8.png"
-var life7 = new Image()
-life7.src = "./vida/VIDA_7.png"
-var life6 = new Image()
-life6.src = "./vida/VIDA_6.png"
-var life5 = new Image()
-life5.src = "./vida/VIDA_5.png"
-var life4 = new Image()
-life4.src = "./vida/VIDA_4.png"
-var life3 = new Image()
-life3.src = "./vida/VIDA_3.png"
-var life2 = new Image()
-life2.src = "./vida/VIDA_2.png"
-var life1 = new Image()
-life1.src = "./vida/VIDA_1.png"
-var life0 = new Image()
-life0.src = "./vida/VIDA_0.png"
+var life1 = new Image();
+life1.src = "./barrax/1.png"
+var life2 = new Image();
+life2.src = "./barrax/2.png"
+var life3 = new Image();
+life3.src = "./barrax/3.png"
+var life4 = new Image();
+life4.src = "./barrax/4.png";
+var life5 = new Image();
+life5.src = "./barrax/5.png";
+var life6 = new Image();
+life6.src = "./barrax/6.png";
+var life7 = new Image();
+life7.src = "./barrax/7.png";
+var life8 = new Image();
+life8.src = "./barrax/8.png";
+var life9 = new Image();
+life9.src = "./barrax/9.png";
+var life10 = new Image();
+life10.src = "./barrax/10.png"
+var life11 = new Image();
+life11.src = "./barrax/11.png";
+var life12 = new Image();
+life12.src = "./barrax/12.png";
+var life13 = new Image();
+life13.src = "./barrax/13.png";
+var life14 = new Image();
+life14.src = "./barrax/14.png";
+var life15 = new Image();
+life15.src = "./barrax/15.png";
+var life16 = new Image();
+life16.src = "./barrax/16.png";
+var life17 = new Image();
+life17.src = "./barrax/17.png";
+
 
 // Estados
 var _estadoAtual;  
@@ -68,10 +84,10 @@ var play = { // Botão play
 
 var perdeu = { // Botão perdeu
     img: lose,
-    x: 0,
-    y: 0,
-    widght: 660,
-    height: 500,
+    x: 270,
+    y: 150,
+    widght: 288,
+    height: 150,
 };
 
 var gameWorld = { // Mundo
@@ -92,7 +108,7 @@ var char = { // Mega Man
     velocidade: 0,
     forcaDoPulo: 13,
     qntPulos: 0,
-    vida: 2500,
+    vida: 2550,
 
     atualiza: function() { // Gravidade
       this.velocidade += this.gravidade;
@@ -112,7 +128,8 @@ var char = { // Mega Man
     },
 };
 
-var espinho = { // Espinho
+// Espinhos
+var espinho = { 
   img: thorn,
   x: 50,
   y: 0,
@@ -129,51 +146,16 @@ var espinho2 = {
   velocidade: 5
 }
 
-
-var barra10 = { // Barra de vida
-  img: life10,
-  x: 50,
-  y: 512,
-  width: 180,
-  height: 10,
+// Barra de vida
+var barra1 = { 
+  img: life1,
+  x: 10,
+  y: 90,
+  width: 20,
+  height: 100,
 };
-var barra9 = {
-  img: life9,
-  x: 50,
-  y: 512,
-  width: 140,
-  height: 10,
-};
-var barra8 = {
-  img: life8,
-  x: 50,
-  y: 512,
-  width: 140,
-  height: 10,
-};
-var barra7 = {
-  img: life7,
-  x: 50,
-  y: 512,
-  width: 140,
-  height: 10,
-};
-var barra6 = {
-  img: life6,
-  x: 50,
-  y: 512,
-  width: 140,
-  height: 10,
-};
-var barra5 = {
-  img: life5,
-  x: 50,
-  y: 512,
-  width: 140,
-  height: 10,
-};
-var barra4 = {
-  img: life4,
+var barra2 = {
+  img: life2,
   x: 50,
   y: 512,
   width: 140,
@@ -186,22 +168,99 @@ var barra3 = {
   width: 140,
   height: 10,
 };
-var barra2 = {
-  img: life2,
+var barra4 = {
+  img: life4,
   x: 50,
   y: 512,
   width: 140,
   height: 10,
 };
-var barra1 = {
-  img: life1,
+var barra5 = {
+  img: life5,
   x: 50,
   y: 512,
   width: 140,
   height: 10,
 };
-var barra0 = {
-  img: life0,
+var barra6 = {
+  img: life6,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra7 = {
+  img: life7,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra8 = {
+  img: life8,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra9 = {
+  img: life9,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra10 = {
+  img: life10,
+  x: 10,
+  y: 90,
+  width: 20,
+  height: 100,
+};
+var barra11 = {
+  img: life11,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra12 = {
+  img: life12,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra13 = {
+  img: life13,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra14 = {
+  img: life14,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra15 = {
+  img: life15,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra16 = {
+  img: life16,
+  x: 50,
+  y: 512,
+  width: 140,
+  height: 10,
+};
+var barra17 = {
+  img: life17,
   x: 50,
   y: 512,
   width: 140,
@@ -369,6 +428,55 @@ function limiteChar() {
   }
 }
 
+// Barra de vida
+function barraVida() {
+  if (char.vida <= 2550 && char.vida > 2400) {
+    ctx.drawImage(barra1.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 2400 && char.vida > 2250) { 
+    ctx.drawImage(barra2.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 2250 && char.vida > 2100) { 
+    ctx.drawImage(barra3.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 2100 && char.vida > 1950) { 
+    ctx.drawImage(barra4.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 1950 && char.vida > 1800) { 
+    ctx.drawImage(barra5.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 1800 && char.vida > 1650) { 
+    ctx.drawImage(barra6.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 1650 && char.vida > 1500) { 
+    ctx.drawImage(barra7.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 1500 && char.vida > 1350) { 
+    ctx.drawImage(barra8.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 1350 && char.vida > 1200) { 
+    ctx.drawImage(barra9.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 1200 && char.vida > 1050) { 
+    ctx.drawImage(barra10.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 1050 && char.vida > 900) { 
+    ctx.drawImage(barra11.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 900 && char.vida > 750) { 
+    ctx.drawImage(barra12.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 750 && char.vida > 600) { 
+    ctx.drawImage(barra13.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 600 && char.vida > 450) { 
+    ctx.drawImage(barra14.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 450 && char.vida > 300) { 
+    ctx.drawImage(barra15.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 300 && char.vida > 150) { 
+    ctx.drawImage(barra16.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida <= 150 && char.vida > 0) { 
+    ctx.drawImage(barra16.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   } else if (char.vida == 0) {
+    ctx.drawImage(barra17.img, barra10.x, barra10.y, barra10.width, barra10.height)
+   }
+
+}
+
+// Score
+function score() {
+  playerScore = parseInt(temporizador / 5)
+  ctx.font = "30px Arial Black"
+  ctx.fillText(`Score: ${playerScore}`, 300, 525)
+}
+
 // Clique
 function clique(event) {
   if (_estadoAtual == _estados.jogar) {
@@ -392,26 +500,20 @@ function main() {
 
     _estadoAtual = _estados.jogar
 
-
     run()
 }
 
-// Agrupamento de funções principais
+// Agrupamento de funções
 function run () {
     update()
     draw()
     movendoChar()
     limiteCam()
     limiteChar()
-    posAtual()
     colisao()
     contVida()
     window.requestAnimationFrame(run)
-
-  console.log(espinho2.x)
-  
-
-}
+} 
 
 function update() {
     frames += 1
@@ -430,62 +532,55 @@ function draw() {
     // Primeiro espinho
     if (contEspinho % 2 == 0) {
     ctx.drawImage(espinho.img, espinho.x -= espinho.velocidade, 450, espinho.width, espinho.height);
-    if (espinho.x == 50) {
+    if (espinho.x == paredeLimite1) {
       contEspinho += 1
     }
     }
     if (contEspinho % 2  != 0) {
       ctx.drawImage(espinho.img, espinho.x += espinho.velocidade, 450, espinho.width, espinho.height);
     }
-    if (espinho.x == 735) {
+    if (espinho.x == paredeLimite2) {
       contEspinho += 1
     }
     // Segundo espinho
     if (temporizador > 140) {
       if (contEspinho2 % 2 != 0) {
         ctx.drawImage(espinho.img, espinho2.x += espinho2.velocidade, 450, espinho.width, espinho.height);
-        if (espinho2.x == 735) {
+        if (espinho2.x == paredeLimite4) {
           contEspinho2 += 1
         }
         }
         if (contEspinho2 % 2  == 0) {
           ctx.drawImage(espinho.img, espinho2.x -= espinho2.velocidade, 450, espinho.width, espinho.height);
         }
-        if (espinho2.x == 50) {
+        if (espinho2.x == paredeLimite3) {
           contEspinho2 += 1
         }
      }
+
+     // Aumento da velocidade do espinho
+     if (playerScore > 108) {
+       espinho.velocidade = 10
+       
+     }
+     if (playerScore > 130) {
+       espinho2.velocidade = 8
+       paredeLimite3 = 52
+       paredeLimite4 = 732
+     }
      
 
-    ctx.drawImage(char.img, char.x, char.y, char.width, char.height); // Desenhar personagem principal
 
-    if (char.vida <= 2500 && char.vida > 2250) { // 100% de vida
-      ctx.drawImage(barra10.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida <= 2250 && char.vida > 2000) { // 90% de vida
-      ctx.drawImage(barra9.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida <= 2000 && char.vida > 1750) { // 80% de vida
-      ctx.drawImage(barra8.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida <= 1750 && char.vida > 1500) { // 70% de vida
-      ctx.drawImage(barra7.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida <= 1500 && char.vida > 1250) { // 60% de vida
-      ctx.drawImage(barra6.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida <= 1250 && char.vida > 1000) { // 50% de vida
-      ctx.drawImage(barra5.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida <= 1000 && char.vida > 750) { // 40% de vida
-      ctx.drawImage(barra4.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida <= 750 && char.vida > 500) { // 30% de vida
-      ctx.drawImage(barra3.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida <= 500 && char.vida > 250) { // 20 % de vida
-      ctx.drawImage(barra2.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida <= 250 && char.vida > 0) { // 10 % de vida
-      ctx.drawImage(barra1.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     } else if (char.vida == 0) {                   // 0% de vida
-      ctx.drawImage(barra0.img, barra10.x, barra10.y, barra10.width, barra10.height)
-     }
+    ctx.drawImage(char.img, char.x, char.y, char.width, char.height); // Desenhar personagem principal
+    
+    barraVida() // Barra de vida
+    score()  // Pontuação do jogador
+
 
   } else if (_estadoAtual == _estados.perdeu) { // Desenhar botão de gamer over 
-    ctx.drawImage(perdeu.img, 270, 150, 310, 150);
-    ctx.drawImage(barra0.img, barra10.x, barra10.y, barra10.width, barra10.height)   
+    ctx.drawImage(perdeu.img, perdeu.x, perdeu.y, perdeu.widght, perdeu.height);
+    ctx.drawImage(barra17.img, barra10.x, barra10.y, barra10.width, barra10.height);
+    score();
   }
 
 }
@@ -509,12 +604,6 @@ function contVida() {
   if (char.vida == 0) {
     _estadoAtual = _estados.perdeu
   }
-}
-
-// Posição atual do jogador
-function posAtual() {
-  refX.textContent = char.x;
-  refY.textContent = char.y;
 }
 
 // Inicializar o jogo
